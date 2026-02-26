@@ -1,226 +1,74 @@
-## What is a Decorator in Python?
-
-A **decorator** in Python is a special function that is used to **modify or enhance another function without changing its original code**.
-
-In simple words:
-
-> A decorator wraps a function and adds extra behavior before or after it runs.
-
-Decorators are commonly used for:
-
-* Logging
-* Authentication
-* Validation
-* Measuring execution time
-* Caching
-* Access control
+# Decorators in FastAPI – Detailed Notes (Learning + Interview Perspective)
 
 ---
 
-# 1️⃣ Why Do We Need Decorators?
+## 1️⃣ What is a Decorator in Python?
 
-Suppose you want to print a message before and after every function call.
+A **decorator** is a function that modifies or enhances another function **without changing its original code**.
 
-Instead of writing the same code again and again inside multiple functions, you can use a decorator to reuse that logic.
+It uses the `@` symbol.
 
-This makes your code:
-
-* Clean
-* Reusable
-* Maintainable
-
----
-
-# 2️⃣ Functions Are First-Class Objects
-
-In Python:
-
-* Functions can be stored in variables
-* Functions can be passed as arguments
-* Functions can be returned from other functions
-
-Example:
+### Basic Example (Python)
 
 ```python
-def greet():
+def my_decorator(func):
+    def wrapper():
+        print("Before function call")
+        func()
+        print("After function call")
+    return wrapper
+
+@my_decorator
+def say_hello():
     print("Hello")
 
-say_hello = greet
 say_hello()
 ```
 
-Because of this feature, decorators are possible.
+👉 Output:
+
+```
+Before function call
+Hello
+After function call
+```
+
+### Interview Definition
+
+A decorator is a higher-order function that takes another function as input and returns a modified function as output.
 
 ---
 
-# 3️⃣ Basic Structure of a Decorator
+# 2️⃣ Why Decorators Are Important in FastAPI?
 
-A decorator has 3 layers:
+In FastAPI, decorators are used to:
 
-```python
-def my_decorator(func):          # Step 1: Accept function
-    def wrapper():               # Step 2: Create wrapper
-        print("Before function")
-        func()
-        print("After function")
-    return wrapper               # Step 3: Return wrapper
-```
+* Define routes
+* Add metadata
+* Handle dependencies
+* Add validation
+* Implement security
+* Apply middleware-like logic
 
-Using it:
-
-```python
-@my_decorator
-def say_hi():
-    print("Hi")
-
-say_hi()
-```
-
-### Output:
-
-```
-Before function
-Hi
-After function
-```
+FastAPI heavily relies on decorators to make APIs clean and readable.
 
 ---
 
-# 4️⃣ What Does @ Symbol Mean?
+# 3️⃣ Route Decorators in FastAPI
 
-This:
+FastAPI provides route decorators like:
 
-```python
-@my_decorator
-def say_hi():
-```
+* `@app.get()`
+* `@app.post()`
+* `@app.put()`
+* `@app.delete()`
+* `@app.patch()`
 
-Is same as writing:
-
-```python
-say_hi = my_decorator(say_hi)
-```
-
-The `@` symbol is just a shortcut.
+These decorators register a function as an API endpoint.
 
 ---
 
-# 5️⃣ Decorator With Arguments
-
-If the original function has parameters, the wrapper must also accept them.
-
-```python
-def my_decorator(func):
-    def wrapper(name):
-        print("Before")
-        func(name)
-        print("After")
-    return wrapper
-
-@my_decorator
-def greet(name):
-    print("Hello", name)
-
-greet("Vinod")
-```
-
----
-
-# 6️⃣ Using *args and **kwargs (Best Practice)
-
-To handle any number of arguments:
-
-```python
-def my_decorator(func):
-    def wrapper(*args, **kwargs):
-        print("Before")
-        result = func(*args, **kwargs)
-        print("After")
-        return result
-    return wrapper
-```
-
-This makes your decorator flexible.
-
----
-
-# 7️⃣ Real Example – Measuring Execution Time
-
-```python
-import time
-
-def timer(func):
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        result = func(*args, **kwargs)
-        end = time.time()
-        print("Execution time:", end - start)
-        return result
-    return wrapper
-
-@timer
-def slow_function():
-    time.sleep(2)
-    print("Done")
-
-slow_function()
-```
-
----
-
-# 8️⃣ Decorator With Arguments (Advanced)
-
-Sometimes the decorator itself needs parameters.
-
-Example:
-
-```python
-def repeat(times):
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            for i in range(times):
-                func(*args, **kwargs)
-        return wrapper
-    return decorator
-
-@repeat(3)
-def say_hi():
-    print("Hi")
-
-say_hi()
-```
-
----
-
-# 9️⃣ Built-in Decorators in Python
-
-Python provides built-in decorators like:
-
-* `@staticmethod`
-* `@classmethod`
-* `@property`
-
-Example:
-
-```python
-class Person:
-    def __init__(self, age):
-        self._age = age
-
-    @property
-    def age(self):
-        return self._age
-```
-
-Now we can access `age` like a variable instead of calling a function.
-
----
-
-# 🔟 Decorators in FastAPI
-
-Since you are learning FastAPI, decorators are very important.
-
-Example:
+## Example 1: Basic Route Decorator
 
 ```python
 from fastapi import FastAPI
@@ -232,76 +80,284 @@ def read_root():
     return {"message": "Hello World"}
 ```
 
-Here:
+### What Happens Internally?
+
+* `@app.get("/")` tells FastAPI:
+
+  * This function handles GET requests
+  * Path = "/"
+  * Register it in routing table
+
+### Interview Point
+
+`@app.get()` is a decorator that registers the function as a route handler in FastAPI’s routing system.
+
+---
+
+# 4️⃣ How FastAPI Decorators Work Internally
+
+Behind the scenes:
 
 ```python
-@app.get("/")
+@app.get("/items")
+def get_items():
+    return {"items": []}
 ```
 
-Is a decorator.
+Is equivalent to something like:
 
-It tells FastAPI:
+```python
+def get_items():
+    return {"items": []}
 
-> When someone sends a GET request to "/", run this function.
+app.get("/items")(get_items)
+```
+
+👉 That means:
+
+* `app.get("/items")` returns a decorator function
+* That decorator function takes `get_items` as argument
+* It registers it internally
 
 ---
 
-# 1️⃣1️⃣ Flow Diagram (How Decorator Works)
+# 5️⃣ Decorators with Parameters
 
+FastAPI route decorators accept many parameters:
+
+```python
+@app.get(
+    "/users",
+    response_model=list[str],
+    status_code=200,
+    tags=["Users"],
+    summary="Get all users",
+    description="Returns a list of users"
+)
+def get_users():
+    return ["Alice", "Bob"]
 ```
-Original Function
-        ↓
-Passed into Decorator
-        ↓
-Wrapped inside Wrapper
-        ↓
-New Modified Function Returned
-        ↓
-Function Call Executes Wrapper
-```
+
+### Important Parameters
+
+| Parameter        | Purpose                           |
+| ---------------- | --------------------------------- |
+| `response_model` | Validates and serializes response |
+| `status_code`    | Sets HTTP status code             |
+| `tags`           | Groups endpoints in Swagger UI    |
+| `summary`        | Short API description             |
+| `description`    | Detailed API description          |
 
 ---
 
-# 1️⃣2️⃣ Important Interview Points
+# 6️⃣ Dependency Injection Using Decorators
 
-* Decorators modify functions without changing original code.
-* They use nested functions.
-* They return a wrapper function.
-* `@decorator` is syntactic sugar.
-* Always use `*args, **kwargs` in real projects.
-* Use `functools.wraps` to preserve original function metadata.
+FastAPI supports dependency injection using `Depends()`.
 
-Example:
+```python
+from fastapi import Depends
+
+def common_params(q: str = None):
+    return {"q": q}
+
+@app.get("/items/")
+def read_items(commons: dict = Depends(common_params)):
+    return commons
+```
+
+### What Happens?
+
+* `Depends(common_params)` tells FastAPI:
+
+  * Execute `common_params`
+  * Inject its return value
+
+### Interview Answer
+
+FastAPI uses dependency injection via the `Depends()` system, which works together with route decorators to inject reusable logic.
+
+---
+
+# 7️⃣ Custom Decorators in FastAPI
+
+You can also create your own decorators.
+
+### Example: Logging Decorator
 
 ```python
 from functools import wraps
 
-def my_decorator(func):
+def log_decorator(func):
     @wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
+    async def wrapper(*args, **kwargs):
+        print("Function called")
+        return await func(*args, **kwargs)
     return wrapper
+```
+
+Use it:
+
+```python
+@app.get("/hello")
+@log_decorator
+async def say_hello():
+    return {"message": "Hello"}
+```
+
+⚠ Important:
+
+* Use `async` wrapper if decorating async functions
+* Always use `@wraps(func)`
+
+---
+
+# 8️⃣ Order of Decorators in FastAPI
+
+Order matters.
+
+Correct:
+
+```python
+@app.get("/test")
+@custom_decorator
+async def test():
+    return {"msg": "ok"}
+```
+
+Execution flow:
+
+1. `@custom_decorator` wraps function
+2. `@app.get()` registers the wrapped function
+
+Wrong order can cause issues.
+
+---
+
+# 9️⃣ Decorators vs Middleware in FastAPI
+
+| Decorator                     | Middleware                          |
+| ----------------------------- | ----------------------------------- |
+| Applied to specific route     | Applied globally                    |
+| Used for endpoint-level logic | Used for request/response lifecycle |
+| Lightweight                   | More powerful                       |
+
+Example Middleware:
+
+```python
+@app.middleware("http")
+async def log_requests(request, call_next):
+    response = await call_next(request)
+    return response
+```
+
+Interview Tip:
+Use decorators for route-specific behavior, middleware for global processing.
+
+---
+
+# 🔟 Async Support in Decorators
+
+FastAPI supports:
+
+* `def` (sync)
+* `async def` (async)
+
+When creating custom decorators for FastAPI:
+
+If route function is async → wrapper must be async.
+
+Wrong:
+
+```python
+def wrapper():
+    return func()
+```
+
+Correct:
+
+```python
+async def wrapper(*args, **kwargs):
+    return await func(*args, **kwargs)
 ```
 
 ---
 
-# ✅ Final Summary
+# 1️⃣1️⃣ Security Decorators in FastAPI
 
-A decorator is:
+Security also works via dependencies.
 
-* A function
-* That takes another function as input
-* Adds extra behavior
-* Returns a new function
-* Without modifying the original function code
+Example with OAuth2:
+
+```python
+from fastapi.security import OAuth2PasswordBearer
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+@app.get("/users/me")
+async def read_users_me(token: str = Depends(oauth2_scheme)):
+    return {"token": token}
+```
+
+Here:
+
+* `Depends()` + security scheme works like a decorator-based injection system.
+
+---
+
+# 1️⃣2️⃣ Common Interview Questions
+
+### Q1: What is a decorator?
+
+A function that modifies another function without changing its source code.
+
+### Q2: How does FastAPI use decorators?
+
+To register routes, add metadata, inject dependencies, and handle validation.
+
+### Q3: What is the difference between decorator and middleware?
+
+Decorator works at route level, middleware works globally.
+
+### Q4: Why is @wraps important?
+
+It preserves original function metadata (name, docstring).
+
+### Q5: What happens when you write @app.get("/")?
+
+It registers that function in FastAPI’s internal routing system.
+
+---
+
+# 1️⃣3️⃣ Real-World Use Cases of Decorators in FastAPI
+
+* Logging
+* Authentication
+* Role-based access control
+* Caching
+* Rate limiting
+* Performance measurement
+* Custom validation
+
+---
+
+# 1️⃣4️⃣ Summary (Important for Interview)
+
+* FastAPI heavily depends on decorators
+* Route decorators register endpoints
+* Decorators can accept parameters
+* Dependency injection works with decorators
+* Order of decorators matters
+* Async support must be handled carefully
+* Middleware is different from decorators
 
 ---
 
 If you want, I can next explain:
 
-* Decorators deeply with memory diagram
-* Closures concept
-* Or FastAPI decorator internals
-* Or Interview-focused notes
+* Advanced decorator patterns in FastAPI
+* How FastAPI internally builds routing system
+* How to build production-ready custom decorators
+* Decorator + Dependency injection deep dive
+* Common mistakes in FastAPI decorators
 
-Tell me which level you want (basic / intermediate / advanced).
+Tell me which level you want next 🚀
