@@ -1,11 +1,8 @@
 
-# Path Parameters & Query Parameters
 
-This topic is **very important for interviews**, especially when building real-world APIs in FastAPI.
+# Path Parameters
 
-# 1️⃣ Path Parameters
-
-## ✅ What are Path Parameters?
+### ✅ What are Path Parameters?
 
 Path parameters are dynamic values that are part of the URL path.
 
@@ -19,7 +16,7 @@ Example:
 
 Here, `10`, `5`, `101` are path parameters.
 
-## ✅ Basic Example in FastAPI
+#### Basic Example in FastAPI
 
 ```python
 from fastapi import FastAPI
@@ -31,14 +28,14 @@ def get_user(user_id: int):
     return {"user_id": user_id}
 ```
 
-### 🔎 How it works:
+#### 🔎 How it works:
 
 * `{user_id}` is a path parameter
 * FastAPI automatically converts it to `int`
 * If conversion fails → validation error
 
 
-## ✅ Automatic Validation
+#### ✅ Automatic Validation
 
 If you call:
 
@@ -61,7 +58,7 @@ You will get:
 
 👉 FastAPI uses Pydantic validation internally.
 
-## ✅ Multiple Path Parameters
+#### ✅ Multiple Path Parameters
 
 ```python
 @app.get("/users/{user_id}/orders/{order_id}")
@@ -71,7 +68,7 @@ def get_order(user_id: int, order_id: int):
         "order_id": order_id
     }
 ```
-## ✅ Path Parameter with Validation
+#### ✅ Path Parameter with Validation
 
 We use `Path()` for advanced validation.
 
@@ -91,22 +88,11 @@ def get_item(
 * `gt=0` → greater than 0
 * `lt=1000` → less than 1000
 
-
-## 🎯 Interview Questions
-
-### ❓ What happens if path parameter type mismatches?
-
-FastAPI returns **422 Unprocessable Entity**.
-
-### ❓ Can path parameters be optional?
-
-❌ No. Path parameters are always required.
-
 ---
 
-# 2️⃣ Query Parameters
+# Query Parameters
 
-## ✅ What are Query Parameters?
+### ✅ What are Query Parameters?
 
 Query parameters come after `?` in URL.
 
@@ -119,7 +105,7 @@ Example:
 ```
 
 
-## ✅ Basic Example
+#### Basic Example
 
 ```python
 @app.get("/users")
@@ -133,7 +119,7 @@ Call:
 /users?limit=5
 ```
 
-## ✅ Optional Query Parameters
+#### ✅ Optional Query Parameters
 
 ```python
 from typing import Optional
@@ -145,7 +131,7 @@ def get_products(category: Optional[str] = None):
 
 If not provided → `None`
 
-## ✅ Multiple Query Parameters
+#### ✅ Multiple Query Parameters
 
 ```python
 @app.get("/items")
@@ -156,7 +142,7 @@ def get_items(skip: int = 0, limit: int = 10):
     }
 ```
 
-## ✅ Query Parameter Validation
+#### ✅ Query Parameter Validation
 
 Using `Query()`:
 
@@ -176,20 +162,9 @@ def search_items(
 * `min_length=3`
 * `max_length=50`
 
-## 🔥 Path vs Query Parameter
 
-| Path Parameter      | Query Parameter          |
-| ------------------- | ------------------------ |
-| Required            | Optional (usually)       |
-| Part of URL path    | After `?`                |
-| Identifies resource | Filters/sorts/pagination |
-| Example: `/users/1` | `/users?limit=10`        |
 
----
-
-## 🧠 When to Use What?
-
-### ✅ Use Path Parameter when:
+#### ✅ Use Path Parameter when:
 
 * Identifying specific resource
 * Required to locate object
@@ -200,7 +175,7 @@ Example:
 /users/{id}
 ```
 
-### ✅ Use Query Parameter when:
+#### ✅ Use Query Parameter when:
 
 * Filtering
 * Sorting
@@ -213,7 +188,7 @@ Example:
 /users?age=25&city=Delhi
 ```
 
-# 🔥 Advanced Interview Concept
+#### 🔥 Advanced Interview Concept
 
 You can mix both:
 

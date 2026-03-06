@@ -11,13 +11,9 @@ When something goes wrong in your API:
 
 FastAPI allows you to handle these errors cleanly and professionally.
 
----
+### 1️⃣ What is Exception Handling?
 
-# 1️⃣ What is Exception Handling?
-
-Exception handling means:
-
-> Catching errors and returning a proper response instead of breaking the application.
+Exception handling means Catching errors and returning a proper response instead of breaking the application.
 
 Example problem:
 
@@ -25,9 +21,8 @@ Example problem:
 * But user with ID 100 does not exist
 * Instead of server crash → return clean error message
 
----
 
-# 📌 2️⃣ Basic Exception – HTTPException
+#### Basic Exception – HTTPException
 
 FastAPI provides built-in class:
 
@@ -35,7 +30,7 @@ FastAPI provides built-in class:
 from fastapi import HTTPException
 ```
 
-### 🔹 Example 1: Simple Not Found Error
+#### Example 1: Simple Not Found Error
 
 ```python
 from fastapi import FastAPI, HTTPException
@@ -54,7 +49,7 @@ def get_user(user_id: int):
     return {"user": fake_db[user_id]}
 ```
 
-### 🔎 Output if user not found:
+#### 🔎 Output if user not found:
 
 ```json
 {
@@ -62,9 +57,7 @@ def get_user(user_id: int):
 }
 ```
 
----
-
-# 📌 3️⃣ Common HTTP Status Codes
+### 2️⃣ Common HTTP Status Codes
 
 | Code | Meaning               |
 | ---- | --------------------- |
@@ -77,34 +70,9 @@ def get_user(user_id: int):
 
 ---
 
-# 📌 4️⃣ Custom Error Message (With Dictionary)
 
-You can return structured error response:
 
-```python
-raise HTTPException(
-    status_code=400,
-    detail={
-        "error": "Invalid Data",
-        "message": "Age must be greater than 18"
-    }
-)
-```
-
-Response:
-
-```json
-{
-  "detail": {
-    "error": "Invalid Data",
-    "message": "Age must be greater than 18"
-  }
-}
-```
-
----
-
-# 📌 5️⃣ Handling Validation Errors (Automatic)
+### 3️⃣ Handling Validation Errors
 
 FastAPI automatically validates input using Pydantic.
 
@@ -138,13 +106,11 @@ If age is string → FastAPI returns:
 
 This error is generated automatically.
 
----
-
-# 📌 6️⃣ Custom Exception Class (Advanced)
+### 4️⃣ Custom Exception Class
 
 You can create your own exception.
 
-### Step 1: Create Custom Exception
+#### Step 1: Create Custom Exception
 
 ```python
 class UserNotFoundException(Exception):
@@ -152,9 +118,7 @@ class UserNotFoundException(Exception):
         self.user_id = user_id
 ```
 
----
-
-### Step 2: Create Exception Handler
+#### Step 2: Create Exception Handler
 
 ```python
 from fastapi.responses import JSONResponse
@@ -171,9 +135,7 @@ def user_not_found_handler(request: Request, exc: UserNotFoundException):
     )
 ```
 
----
-
-### Step 3: Use It
+#### Step 3: Use It
 
 ```python
 @app.get("/users/{user_id}")
@@ -183,9 +145,8 @@ def get_user(user_id: int):
     return {"user": fake_db[user_id]}
 ```
 
----
 
-# 📌 7️⃣ Global Exception Handler
+### 5️⃣ Global Exception Handler
 
 Catch all unexpected errors:
 
@@ -203,9 +164,8 @@ def global_exception_handler(request: Request, exc: Exception):
 
 ⚠ In production, avoid exposing real error message.
 
----
 
-# 📌 8️⃣ Handling RequestValidationError Manually
+### 6️⃣ Handling RequestValidationError Manually
 
 Import:
 
@@ -227,9 +187,7 @@ def validation_exception_handler(request: Request, exc: RequestValidationError):
     )
 ```
 
----
-
-# 📌 9️⃣ Returning Custom Response Directly
+### 7️⃣ Returning Custom Response Directly
 
 Instead of raising exception:
 
@@ -244,19 +202,13 @@ def test():
     )
 ```
 
----
+### 8️⃣ Production-Level Best Practices
 
-# 📌 🔟 Production-Level Best Practices
-
-### ✅ 1. Do not expose internal errors
-
-### ✅ 2. Use structured error format
-
-### ✅ 3. Log errors properly
-
-### ✅ 4. Create reusable custom exceptions
-
-### ✅ 5. Separate error handlers in different file
+1. Do not expose internal errors
+2. Use structured error format
+3. Log errors properly
+4. Create reusable custom exceptions
+5. Separate error handlers in different file
 
 Example structure:
 
@@ -267,9 +219,7 @@ app/
  ├── handlers.py
 ```
 
----
-
-# 📌 1️⃣1️⃣ Using Middleware for Exception Logging (Advanced)
+### 9️⃣ Using Middleware for Exception Logging
 
 ```python
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -286,52 +236,3 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
 app.add_middleware(LoggingMiddleware)
 ```
-
----
-
-# 📌 1️⃣2️⃣ Real-World Error Response Format (Recommended)
-
-Professional APIs return consistent format:
-
-```json
-{
-  "success": false,
-  "error": {
-    "code": 404,
-    "message": "User not found"
-  }
-}
-```
-
----
-
-# 🎯 Summary (Interview Ready)
-
-You should know:
-
-* What is HTTPException
-* How to raise errors
-* Custom exception class
-* Global exception handler
-* Handling validation errors
-* Production best practices
-
----
-
-# 💡 Interview Question
-
-**Q: What is difference between raising HTTPException and returning JSONResponse?**
-
-✔ `HTTPException` → stops execution immediately
-✔ `JSONResponse` → manually returns response
-
----
-
-If you want, next I can give:
-
-* 🔥 Mini project with full exception structure
-* 🔥 Real production folder architecture
-* 🔥 Advanced error handling with database + JWT
-* 🔥 Complete interview notes
-
-Just tell me 🚀
