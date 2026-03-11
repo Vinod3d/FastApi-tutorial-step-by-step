@@ -2,6 +2,7 @@
 
 Topics:
 - What is Authentication and Authorization
+- What & Why use JWT 
 - Password hashing
 - OAuth2 password flow
 - JWT
