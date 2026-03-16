@@ -7,5 +7,5 @@ class UserCreate(BaseModel):
     role: str = "user"
 
 class UserLogin(BaseModel):
-    username: str
+    email: str
     password: str
