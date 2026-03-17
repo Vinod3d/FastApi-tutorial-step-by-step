@@ -27,6 +27,9 @@ Uvicorn is a lightning-fast ASGI server commonly used to run FastAPI apps.
 
 ```bash
 pip install "uvicorn[standard]"
+
+# create requirement.txt file
+pip freeze | Out-File -Encoding utf8 requirements.txt 
 ```
 
 ### First app
