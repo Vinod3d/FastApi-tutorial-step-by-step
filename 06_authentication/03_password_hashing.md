@@ -15,6 +15,13 @@ You must **Hash** the password.
 
 When a user registers, you blend their password into a hash (`$2b$12$9M...`) and save the hash. When they log in, they type their password. You blend it again. If the two glasses of juice look identical, the password is correct! You never actually know what their password is.
 
+## Installation
+To use `passlib` with the `bcrypt` hashing algorithm in FastAPI, install it using pip:
+
+```bash
+pip install "passlib[bcrypt]"
+```
+
 ## Code Example
 **1. Password Hashing Logic (`security.py`)**
 ```python

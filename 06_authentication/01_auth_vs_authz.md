@@ -1,11 +1,5 @@
 # Authentication vs. Authorization
 
-## What you will learn
-- The fundamental difference between Authentication and Authorization
-- Why confusing them causes critical security flaws
-- How they practically apply to web applications
-- Real-world flows mapping to FastAPI
-
 ## Concept (Simple Explanation)
 **Authentication (AuthN):** *Who are you?*
 When you approach a secure building, you hand the security guard your ID card. The guard verifies your face matches the photo. You are now Authenticated. (Logging in with email/password).

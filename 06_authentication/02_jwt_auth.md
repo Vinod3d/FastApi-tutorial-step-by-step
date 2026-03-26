@@ -20,6 +20,13 @@ It consists of three parts separated by dots (`.`):
 2. **Payload (Claims):** The actual JSON data (e.g., `{"user_id": 1, "role": "admin"}`). **This is readable by anyone! Never put passwords here!**
 3. **Signature:** A cryptographic hash created by combining the Header, Payload, and your server's `SECRET_KEY`. If a hacker modifies the payload (changing their role from "user" to "admin"), the signature will instantly become invalid.
 
+## Installation
+To generate and verify JWTs safely in Python, you need the `PyJWT` library.
+
+```bash
+pip install PyJWT
+```
+
 ## Code Example
 **How a JWT is passed in a FastAPI HTTP Request:**
 ```text
