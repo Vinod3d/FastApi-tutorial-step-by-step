@@ -1,10 +1,5 @@
 # JSON Web Tokens (JWT)
 
-## What you will learn
-- What a JWT is and why modern APIs use it over Session Cookies
-- The three parts of a JWT (Header, Payload, Signature)
-- How JWT enables "Stateless" authentication
-- The security benefits and risks of JWTs
 
 ## Concept (Simple Explanation)
 Traditionally, when you log into a website, the server creates a "Session ID", gives it to your browser, and saves a copy in its own memory. Every time you click a page, the server checks its memory to see if your ID is valid. This uses a lot of server memory.
@@ -19,6 +14,11 @@ It consists of three parts separated by dots (`.`):
 1. **Header:** Determines the hashing algorithm (usually HS256).
 2. **Payload (Claims):** The actual JSON data (e.g., `{"user_id": 1, "role": "admin"}`). **This is readable by anyone! Never put passwords here!**
 3. **Signature:** A cryptographic hash created by combining the Header, Payload, and your server's `SECRET_KEY`. If a hacker modifies the payload (changing their role from "user" to "admin"), the signature will instantly become invalid.
+
+## The `jti` Claim (JWT ID)
+The payload contains data called "claims". A very important standard claim is **`jti` (JWT ID)**.
+- **What is `jti`?** It is a unique identifier (like a UUID or serial number) for a specific token.
+- **Why use it?** Since JWTs are stateless, logging out or revoking a token before it expires is difficult. By including a `jti`, you can store this unique ID in a database or Redis (as a "blacklist" or "blocklist") when a user logs out. Every time a request comes in, the server checks if the token's `jti` is blacklisted. It is also used to prevent **Replay Attacks** (reusing a token meant for a single use).
 
 ## Installation
 To generate and verify JWTs safely in Python, you need the `PyJWT` library.
@@ -65,3 +65,6 @@ A: JWT is stateless because the server does not need to store active sessions in
 
 **Q: Can you encrypt data inside a JWT?**
 A: Standard JWTs only sign data, they do not encrypt it (the payload is readable). If encryption is required so the client cannot read the payload, you must use JWE (JSON Web Encryption), which is a different standard.
+
+**Q: The Need for JTI and UUID. Why is it important to have a unique identifier for each JSON Web Token (JWT) in the context of a secure logout mechanism?**
+
