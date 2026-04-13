@@ -1,17 +1,5 @@
 # Setting Up a FastAPI Project
 
-## What you will learn
-- Installing FastAPI and Uvicorn
-- Setting up a Virtual Environment
-- Creating a production-ready project folder structure
-
-## Concept (Simple Explanation)
-Before you build an API, you need a safe sandbox to play in without messing up your computer's global Python settings. This is a **Virtual Environment**. 
-Once inside the sandbox, you install your tools: **FastAPI** (the framework that helps you write the code) and **Uvicorn** (the engine/server that actually runs the code and listens to the internet).
-
-### Introduction
-FastAPI is a modern, high-performance Python web framework for building APIs using standard Python type hints. It is built on top of Starlette (for the web parts) and Pydantic (for data validation).
-
 ### Installing FastAPI
 - Recommended: use a virtual environment (venv or poetry).
 
@@ -22,7 +10,7 @@ python -m venv .venv
 source .venv/bin/activate   # Unix/macOS
 .venv\Scripts\activate    # Windows Powershell
 pip install --upgrade pip
-pip install fastapi
+pip install "fastapi[standard]"
 ```
 
 ### Installing Uvicorn
